@@ -332,80 +332,99 @@ public class VentanaAgendamientoDeCita extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        String fecha = txtFechaAgendamiento.getText();
-        String hora = txtHora.getText();
-        String nombreM = txtMascota.getText();
-        String nombreP = txtPropietario.getText();
-        String nombreV = (String) cbVeterinario.getSelectedItem();
+         // Obtener los datos ingresados desde los campos de texto y combo box
+    String fecha = txtFechaAgendamiento.getText();
+    String hora = txtHora.getText();
+    String nombreM = txtMascota.getText();
+    String nombreP = txtPropietario.getText();
+    String nombreV = (String) cbVeterinario.getSelectedItem();
 
-        // Validar campos vacios
-        if (fecha.isEmpty() || hora.isEmpty() || nombreM.isEmpty()
-                || nombreP.isEmpty() || nombreV == null || nombreV.equals("--")) {
+    // Validar que todos los campos estén completos
+    if (fecha.isEmpty() || hora.isEmpty() || nombreM.isEmpty()
+            || nombreP.isEmpty() || nombreV == null || nombreV.equals("---")) {
+        JOptionPane.showMessageDialog(this, "Por favor complete todos los campos");
+        return;
+    }
 
-            JOptionPane.showMessageDialog(this, "Por favor complete todos los campos");
-            return;
-        }
+    // Buscar al propietario y a la mascota
+    Propietario propietario = null;
+    Mascota mascota = null;
 
-        // Buscar propietario y mascota
-        Propietario propietario = null;
-        Mascota mascota = null;
+    for (Propietario p : Propietario.listaPropietarios) {
+        if (p.getNombreP().equalsIgnoreCase(nombreP)) {
+            propietario = p;
 
-        for (Propietario p : Propietario.listaPropietarios) {
-            if (p.getNombreP().equalsIgnoreCase(nombreP)) {
-                propietario = p;
-                for (Mascota m : p.getListaMascotas()) {
-                    if (m.getNombreM().equalsIgnoreCase(nombreM)) {
-                        mascota = m;
-                        break;
-                    }
+            // Dentro del propietario, buscar la mascota
+            for (Mascota m : p.getListaMascotas()) {
+                if (m.getNombreM().equalsIgnoreCase(nombreM)) {
+                    mascota = m;
+                    break;
                 }
-                break;
             }
+            break;
         }
+    }
 
-        if (propietario == null || mascota == null) {
-            JOptionPane.showMessageDialog(this, "Propietario o mascota no encontrados");
-            return;
-        }
+    // Validar que se haya encontrado el propietario y su mascota
+    if (propietario == null || mascota == null) {
+        JOptionPane.showMessageDialog(this, "Propietario o mascota no encontrados");
+        return;
+    }
 
-        // Buscar veterinario
-        Veterinario veterinario = Veterinario.buscarVeterinario(nombreV);
-        if (veterinario == null) {
-            JOptionPane.showMessageDialog(this, "Veterinario no encontrado");
-            return;
-        }
+    // Buscar el veterinario por nombre
+    Veterinario veterinario = Veterinario.buscarVeterinario(nombreV);
 
-        // Crear y guardar cita
-        Cita cita = new Cita(fecha, hora, mascota, propietario, veterinario);
-        Cita.guardarCita(cita);
+    // Validar que el veterinario exista
+    if (veterinario == null) {
+        JOptionPane.showMessageDialog(this, "Veterinario no encontrado");
+        return;
+    }
 
-        JOptionPane.showMessageDialog(this, "Cita agendada con exito");
+    // Verificar si el veterinario está disponible
+    if (!veterinario.isDisponible()) {
+        JOptionPane.showMessageDialog(this, "El veterinario seleccionado no está disponible");
+        return;
+    }
 
-        limpiarCampos();
-        llenarTabla();
+    // Validar si ya hay una cita agendada para ese veterinario en la misma fecha y hora
+    Cita citaExistente = Cita.buscarCita(fecha, hora);
+    if (citaExistente != null && citaExistente.getVeterinario().getNombreV().equalsIgnoreCase(nombreV)) {
+        JOptionPane.showMessageDialog(this, "Este veterinario ya tiene una cita agendada en esa fecha y hora");
+        return;
+    }
+
+    // Crear la nueva cita
+    Cita nuevaCita = new Cita(fecha, hora, mascota, propietario, veterinario);
+
+    // Guardar la cita en la lista
+    Cita.guardarCita(nuevaCita);
+
+    // Mostrar mensaje de éxito
+    JOptionPane.showMessageDialog(this, "Cita agendada con éxito");
+
+    // Limpiar campos y actualizar la tabla
+    limpiarCampos();
+    llenarTabla();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String fecha = txtFechaAgendamiento.getText();
+        String hora = txtHora.getText();
 
-        // Validar que se haya ingresado la fecha
-        if (fecha.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor ingrese la fecha de la cita a buscar");
+        if (fecha.isEmpty() || hora.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese la fecha y hora de la cita a buscar");
             return;
         }
 
-        // Buscar la cita
-        Cita cita = Cita.buscarCita(fecha);
+        Cita cita = Cita.buscarCita(fecha, hora);
 
         if (cita != null) {
-            txtHora.setText(cita.getHora());
             txtMascota.setText(cita.getMascota().getNombreM());
             txtPropietario.setText(cita.getPropietario().getNombreP());
             cbVeterinario.setSelectedItem(cita.getVeterinario().getNombreV());
-
             JOptionPane.showMessageDialog(this, "Cita encontrada");
         } else {
-            JOptionPane.showMessageDialog(this, "No se encontró una cita con esa fecha");
+            JOptionPane.showMessageDialog(this, "No se encontro una cita con esa fecha y hora");
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -416,7 +435,7 @@ public class VentanaAgendamientoDeCita extends javax.swing.JFrame {
         String nombreP = txtPropietario.getText();
         String nombreV = (String) cbVeterinario.getSelectedItem();
 
-        // Validar campos vacíos
+        // Validar campos vacios
         if (fecha.isEmpty() || hora.isEmpty() || nombreM.isEmpty() || nombreP.isEmpty() || nombreV == null) {
             JOptionPane.showMessageDialog(this, "Por favor complete todos los campos");
             return;
@@ -450,43 +469,53 @@ public class VentanaAgendamientoDeCita extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Propietario o mascota no encontrados");
             return;
         }
-        
+
         // Editar la cita
         boolean editado = Cita.editarCita(fecha, hora, mascota, propietario, veterinario);
 
         if (editado) {
-            JOptionPane.showMessageDialog(this, "Cita editada correctamente");
+            JOptionPane.showMessageDialog(this,"la cita fue editada");
             limpiarCampos();
             llenarTabla();
         } else {
-            JOptionPane.showMessageDialog(this, "No se encontro cita con esa fecha");
+            JOptionPane.showMessageDialog(this,"No se encontro cita con esa fecha");
         }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-         String fecha = txtFechaAgendamiento.getText();
+        // Obtener los datos ingresados por el usuario
+    String fecha = txtFechaAgendamiento.getText();
+    String hora = txtHora.getText();
 
-    // Validar campo vacio
-    if (fecha.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Ingrese la fecha de la cita a eliminar");
+    // Validar que ambos campos estén llenos
+    if (fecha.isEmpty() || hora.isEmpty()) {
+        JOptionPane.showMessageDialog(this,"Por favor ingrese la fecha y hora de la cita a eliminar");
         return;
     }
 
-    // Confirmar eliminación
+    // Buscar la cita exacta por fecha y hora
+    Cita cita = Cita.buscarCita(fecha, hora);
+
+    // Verificar si se encontro la cita
+    if (cita == null) {
+        JOptionPane.showMessageDialog(this,"No se encontro una cita con esa fecha y hora");
+        return;
+    }
+
+    // Confirmar con el usuario si realmente desea eliminar
     int opcion = JOptionPane.showConfirmDialog(this,
-        "¿Estás seguro de eliminar la cita del día " + fecha + "?",
-        "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+            "¿Estas seguro de eliminar la cita del dia " + fecha + " a las " + hora + "?",
+            "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
 
+    // Si el usuario confirma entonces elimina la cita
     if (opcion == JOptionPane.YES_OPTION) {
-        boolean eliminado = Cita.eliminarCita(fecha);
+        Cita.listaCitas.remove(cita); // Elimina la cita de la lista directamente
 
-        if (eliminado) {
-            JOptionPane.showMessageDialog(this, "la cita fue eliminada");
-            limpiarCampos();
-            llenarTabla();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se encontro una cita con esa fecha");
-        }
+        JOptionPane.showMessageDialog(this,"La cita fue eliminada");
+
+        //----Limpiar campos y actualizar la tabla--------
+        limpiarCampos();
+        llenarTabla();
     }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -518,9 +547,12 @@ public class VentanaAgendamientoDeCita extends javax.swing.JFrame {
     }
 
     private void llenarComboVeterinarios() {
-        cbVeterinario.removeAllItems(); // Limpia el combo
+        cbVeterinario.removeAllItems(); //Limpia el combo
+        cbVeterinario.addItem("---");   //Opcion inicial
         for (Veterinario v : Veterinario.listaVeterinarios) {
-            cbVeterinario.addItem(v.getNombreV());
+            if (v.isDisponible()) {
+                cbVeterinario.addItem(v.getNombreV());
+            }
         }
     }
 

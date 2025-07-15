@@ -70,15 +70,22 @@ public class Cita {
     
     //---------------CRUD-------------------------------
     
-    //----------Guardar cita----------------
-    public static void guardarCita(Cita cita) {
+     // Guardar cita (validando que no se repita fecha+hora)
+    public static boolean guardarCita(Cita cita) {
+        for (Cita c : listaCitas) {
+            if (c.getFecha().equalsIgnoreCase(cita.getFecha()) &&
+                c.getHora().equalsIgnoreCase(cita.getHora())) {
+                return false; // ya existe una cita en esa fecha y hora
+            }
+        }
         listaCitas.add(cita);
+        return true;
     }
 
-    //-------Buscar cita por fecha-------------
-    public static Cita buscarCita(String fecha) {
+    // Buscar por fecha y hora
+    public static Cita buscarCita(String fecha, String hora) {
         for (Cita c : listaCitas) {
-            if (c.getFecha().equalsIgnoreCase(fecha)) {
+            if (c.getFecha().equalsIgnoreCase(fecha) && c.getHora().equalsIgnoreCase(hora)) {
                 return c;
             }
         }
@@ -90,8 +97,9 @@ public class Cita {
             String hora, Mascota mascota, Propietario propietario,
             Veterinario veterinario){
         
-         Cita cita = buscarCita(fecha);
+         Cita cita = buscarCita(fecha,hora);
         if (cita != null) {
+            cita.setFecha(fecha);
             cita.setHora(hora);
             cita.setMascota(mascota);
             cita.setPropietario(propietario);
@@ -102,8 +110,8 @@ public class Cita {
     }
     
     //-------------Eliminar cita-------------------
-    public static boolean eliminarCita(String fecha) {
-        Cita cita = buscarCita(fecha);
+    public static boolean eliminarCita(String fecha,String hora) {
+        Cita cita = buscarCita(fecha,hora);
         if (cita != null) {
             listaCitas.remove(cita);
             return true;

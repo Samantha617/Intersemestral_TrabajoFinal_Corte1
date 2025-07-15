@@ -46,14 +46,12 @@ public class VentanaConsulta extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
         txtFecha = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnBuscar = new javax.swing.JButton();
-        cbVeterinarios = new javax.swing.JComboBox<>();
         txtMascota = new javax.swing.JTextField();
         txtDiagnostico = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -96,10 +94,6 @@ public class VentanaConsulta extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Fecha:");
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Veterinario:");
 
         txtCodigo.setBackground(new java.awt.Color(0, 204, 102));
         txtCodigo.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
@@ -145,11 +139,6 @@ public class VentanaConsulta extends javax.swing.JFrame {
                 btnBuscarActionPerformed(evt);
             }
         });
-
-        cbVeterinarios.setBackground(new java.awt.Color(0, 204, 102));
-        cbVeterinarios.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        cbVeterinarios.setForeground(new java.awt.Color(0, 0, 0));
-        cbVeterinarios.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---" }));
 
         txtMascota.setBackground(new java.awt.Color(0, 204, 102));
         txtMascota.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
@@ -212,15 +201,13 @@ public class VentanaConsulta extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel7))
                         .addGap(75, 75, 75)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtFecha, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
                             .addComponent(txtMascota, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDiagnostico, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTratamiento, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbVeterinarios, javax.swing.GroupLayout.Alignment.LEADING, 0, 237, Short.MAX_VALUE)
                             .addComponent(txtMedicamentos, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtCodigo))))
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -252,11 +239,7 @@ public class VentanaConsulta extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMedicamentos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(cbVeterinarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(37, 37, 37)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGuardar)
                     .addComponent(btnEliminar)
@@ -275,17 +258,17 @@ public class VentanaConsulta extends javax.swing.JFrame {
         tblConsultas.setForeground(new java.awt.Color(0, 0, 0));
         tblConsultas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Codigo", "Fecha", "Mascota", "Diagnostico", "Tratamiento", "Medicamento", "Veterinario"
+                "Codigo", "Fecha", "Mascota", "Diagnostico", "Tratamiento", "Medicamento"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -590,11 +573,9 @@ public class VentanaConsulta extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnRegresar;
-    private javax.swing.JComboBox<String> cbVeterinarios;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
